@@ -1,8 +1,6 @@
 FROM node:20-slim
 
-# -------------------------
-# Dependencias de Puppeteer
-# -------------------------
+# Puppeteer deps
 RUN apt-get update && apt-get install -y \
   chromium \
   fonts-liberation \
@@ -28,31 +26,19 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 WORKDIR /app
 
-# -------------------------
-# 1. Instalar backend deps (mejor cache)
-# -------------------------
+# Backend deps
 COPY package*.json ./
 RUN npm install
 
-# -------------------------
-# 2. Instalar frontend deps
-# -------------------------
+# Frontend deps
 COPY client/package*.json ./client/
 RUN cd client && npm install
 
-# -------------------------
-# 3. Copiar todo el código
-# -------------------------
+# Código
 COPY . .
 
-# -------------------------
-# 4. Build frontend
-# -------------------------
-RUN cd client && npm run build
+# Build frontend
+RUN npm run build
 
-# -------------------------
-# 5. Exponer y correr
-# -------------------------
 EXPOSE 3001
-
 CMD ["node", "server/index.js"]
