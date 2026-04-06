@@ -26,19 +26,17 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 WORKDIR /app
 
-# Backend deps
-COPY package*.json ./
-RUN npm install
-
-# Frontend deps
-COPY client/package*.json ./client/
-RUN cd client && npm install
-
-# Código
+# Copiar TODO (evita errores de paths)
 COPY . .
 
+# Instalar backend
+RUN npm install
+
+# Instalar frontend
+RUN cd client && npm install
+
 # Build frontend
-RUN npm run build
+RUN cd client && npm run build
 
 EXPOSE 3001
 CMD ["node", "server/index.js"]
